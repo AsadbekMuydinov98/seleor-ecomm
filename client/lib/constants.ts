@@ -1,4 +1,4 @@
-import { Banknote, Heart, Settings2, Shuffle, User } from "lucide-react";
+import { Banknote, Barcode, Heart, Settings2, Shuffle, User } from "lucide-react";
 
 export const products = [
 	{
@@ -37,3 +37,12 @@ export const dashboardSidebar = [
 	{ name: 'Watch list', route: '/dashboard/watch-list', icon: Heart },
 	{ name: 'Settings', route: '/dashboard/settings', icon: Settings2 },
 ];
+
+
+export const adminSidebar = [
+	{ name: 'Customers', icon: User, route: '/admin' },
+	{ name: 'Products', icon: Barcode, route: '/admin/products' },
+	{ name: 'Orders', icon: Shuffle, route: '/admin/orders' },
+	{ name: 'Payments', icon: Banknote, route: '/admin/payments' },
+];
+

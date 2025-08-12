@@ -29,3 +29,12 @@ export const passwordSchema = z
 		message: 'Passwords do not match',
 		path: ['confirmPassword'],
 	});
+
+export const productSchema = z.object({
+	title: z.string().min(3, { message: 'Name must be at least 3 characters' }),
+	price: z.string(),
+	description: z.string().min(10, { message: 'Description must be at least 10 characters' }),
+	category: z.string(),
+	image: z.string(),
+	imageKey: z.string(),
+});
