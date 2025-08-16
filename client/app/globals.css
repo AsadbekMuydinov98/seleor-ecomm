@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
@@ -113,41 +112,40 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+	* {
+		@apply border-border;
+	}
+	body {
+		@apply bg-background text-foreground;
+    
+	}
 }
+
+
+
+/* globals.css */
+
+
 
 .container {
-  margin-left: auto;
-  margin-right: auto; /* center: true */
-  padding-left: 1rem;
-  padding-right: 1rem; /* padding: '1rem' */
-}
-
-@media (min-width: 640px) {
-  .container {
-    max-width: 100%; /* sm */
-  }
-}
-
-@media (min-width: 768px) {
-  .container {
-    max-width: 100%; /* md */
-  }
+  @apply w-full mx-auto px-4;
 }
 
 @media (min-width: 1024px) {
   .container {
-    max-width: 1024px; /* lg */
+    max-width: 1024px;
   }
 }
 
 @media (min-width: 1280px) {
   .container {
-    max-width: 1280px; /* xl */
+    max-width: 1280px;
   }
 }
+
+
+
+.no-focus {
+	@apply focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0;
+} 
+
