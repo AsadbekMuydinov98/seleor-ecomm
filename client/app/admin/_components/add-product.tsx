@@ -1,5 +1,6 @@
 'use client';
 
+import { createProduct, deleteFile } from '@/actions/admin.action';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -8,16 +9,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Textarea } from '@/components/ui/textarea';
+import useAction from '@/hooks/use-action';
 import { useProduct } from '@/hooks/use-product';
 import { categories } from '@/lib/constants';
+import { UploadDropzone } from '@/lib/uploadthing';
 import { formatPrice } from '@/lib/utils';
 import { productSchema } from '@/lib/validation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PlusCircle } from 'lucide-react';
+import { Loader, PlusCircle, X } from 'lucide-react';
+import Image from 'next/image';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 const AddProduct = () => {
+	const {isLoading, onError, setIsLoading} = useAction()
 	const { open, setOpen } = useProduct();
 
 	const form = useForm<z.infer<typeof productSchema>>({
@@ -25,10 +31,31 @@ const AddProduct = () => {
 		defaultValues: { title: '', description: '', category: '', price: '', image: '', imageKey: '' },
 	});
 
-	async function onSubmit(values: z.infer<typeof productSchema>) {}
+	async function onSubmit(values: z.infer<typeof productSchema>) {
+		if (!form.watch('image')) return toast.warning('Please upload an image');
+		setIsLoading(true)
+		const res = await createProduct(values)
+		if(res?.serverError || res?.validationErrors || !res?.data) {
+			return onError('Something went wrong')
+		}
+		if(res.data.failure) {
+			return onError(res.data.failure)
+		}	
+		
+		if(res.data.status === 200) {
+			toast.success("Product created successfully")
+			setOpen(false)
+		}
+	}
 
 	function onOpen() {
 		setOpen(true);
+	}
+
+	function onDeleteImage() {
+		deleteFile(form.getValues('imageKey'));
+		form.setValue('image', '');
+		form.setValue('imageKey', '');
 	}
 
 	return (
@@ -53,7 +80,7 @@ const AddProduct = () => {
 									<FormItem className='space-y-0'>
 										<Label className='text-xs'>Title</Label>
 										<FormControl>
-											<Input placeholder='Adidas shoes' className='bg-secondary' {...field} />
+											<Input placeholder='Adidas shoes' className='bg-secondary' disabled={isLoading} {...field} />
 										</FormControl>
 										<FormMessage className='text-xs text-red-500' />
 									</FormItem>
@@ -66,7 +93,12 @@ const AddProduct = () => {
 									<FormItem className='space-y-0'>
 										<Label className='text-xs'>Description</Label>
 										<FormControl>
-											<Textarea placeholder='Adidas shoes are the best shoes in the world' className='bg-secondary' {...field} />
+											<Textarea
+												placeholder='Adidas shoes are the best shoes in the world'
+												className='bg-secondary'
+												disabled={isLoading}
+												{...field}
+											/>
 										</FormControl>
 										<FormMessage className='text-xs text-red-500' />
 									</FormItem>
@@ -78,7 +110,7 @@ const AddProduct = () => {
 								render={({ field }) => (
 									<FormItem className='space-y-0'>
 										<Label className='text-xs'>Cateogry</Label>
-										<Select onValueChange={field.onChange} defaultValue={field.value}>
+										<Select onValueChange={field.onChange} disabled={isLoading} defaultValue={field.value}>
 											<FormControl>
 												<SelectTrigger className='bg-secondary'>
 													<SelectValue placeholder='Select category' />
@@ -105,14 +137,39 @@ const AddProduct = () => {
 											{!form.watch('price') ? 'Price' : `Price ${formatPrice(Number(form.watch('price')))} `}
 										</Label>
 										<FormControl>
-											<Input placeholder='100.000 UZS' type='number' className='bg-secondary' {...field} />
+											<Input placeholder='100.000 UZS' type='number' className='bg-secondary' disabled={isLoading} {...field} />
 										</FormControl>
 										<FormMessage className='text-xs text-red-500' />
 									</FormItem>
 								)}
 							/>
-							<Button type='submit' className='w-full'>
-								Submit
+							{form.watch('image') && (
+								<div className='w-full h-[200px] bg-secondary flex justify-center items-center relative'>
+									<Image src={form.watch('image')} alt='product image' fill className='object-cover' />
+									<Button
+										size={'icon'}
+										variant={'destructive'}
+										className='absolute right-0 top-0'
+										type='button'
+										onClick={onDeleteImage}
+									>
+										<X />
+									</Button>
+								</div>
+							)}
+							{!form.watch('image') && (
+								<UploadDropzone
+									endpoint={'imageUploader'}
+									onClientUploadComplete={res => {
+										form.setValue('image', res[0].url);
+										form.setValue('imageKey', res[0].key);
+									}}
+									config={{ appendOnPaste: true, mode: 'auto' }}
+									appearance={{ container: { height: 200, padding: 10 } }}
+								/>
+							)}
+							<Button type='submit' className='w-full' disabled={isLoading}>
+								Submit {isLoading && <Loader className='animate-spin' />}
 							</Button>
 						</form>
 					</Form>

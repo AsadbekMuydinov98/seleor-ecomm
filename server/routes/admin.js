@@ -1,5 +1,6 @@
 const adminController = require('../controllers/admin.controller');
 
+
 const router = require('express').Router();
 
 router.get('/products', adminController.getProducts);
