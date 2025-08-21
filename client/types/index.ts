@@ -13,9 +13,12 @@ export interface QueryProps {
 export interface ReturnActionType {
 	user: IUser;
 	failure: string;
-	status: number
-	products: IProduct[]
-	isNext: boolean
+	status: number;
+	products: IProduct[];
+	isNext: boolean;
+	customers: IUser[];
+	orders: IOrder[];
+	transactions: ITransaction[];
 }
 
 
@@ -45,3 +48,26 @@ export interface IUser {
 }
 
 
+export interface IOrder {
+	_id: string;
+	user: IUser;
+	product: IProduct;
+	createdAt: Date;
+	price: number;
+	status: string;
+	updatedAt: Date;
+}
+
+export interface ITransaction {
+	_id: string;
+	id: string;
+	user: IUser;
+	product: IProduct;
+	state: number;
+	amount: number;
+	create_time: number;
+	perform_time: number;
+	cancel_time: number;
+	reason: number;
+	provider: string;
+}
