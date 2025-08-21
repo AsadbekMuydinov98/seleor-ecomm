@@ -28,20 +28,6 @@ const Page: FC<Props> = async(props) => {
 				<h1 className='text-xl font-bold'>Customers</h1>
 				<Filter />
 			</div>
-			
-_id
-68a6c25f236c7342659440be
-user
-669b1b16e892dd51016a68f5
-product
-66ad962c9d32b2f4a5ed3daf
-status
-"Success"
-price
-10000
-createdAt
-2024-07-10T23:01:00.179+00:00
-
 			<Separator className='my-3' />
 
 			<Table>

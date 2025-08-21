@@ -3,6 +3,7 @@ export interface ChildProps {
 }
 
 export type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+export type Params = Promise<{ productId: string }>;
 
 export interface QueryProps {
   params: string;
@@ -15,6 +16,7 @@ export interface ReturnActionType {
 	failure: string;
 	status: number;
 	products: IProduct[];
+	product: IProduct
 	isNext: boolean;
 	customers: IUser[];
 	orders: IOrder[];
