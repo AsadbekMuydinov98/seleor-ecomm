@@ -16,11 +16,12 @@ export interface ReturnActionType {
 	failure: string;
 	status: number;
 	products: IProduct[];
-	product: IProduct
+	product: IProduct;
 	isNext: boolean;
 	customers: IUser[];
 	orders: IOrder[];
 	transactions: ITransaction[];
+	statistics: { totalOrders: number; totalTransactions: number; totalFavourites: number };
 }
 
 
